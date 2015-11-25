@@ -40,6 +40,13 @@ match l with
 | z::l' => insert z (insertion_sort l')
 end.
 
+(*
+Inductive sorted
+Hint Resolve sorted0 sorted1 sorted2 : sort.
+Lemma sort_2357
+Theorem sorted_inv
+*)
+
 Fixpoint nb_occ (z:T) (l:list T) {struct l} : nat :=
   match l with
   | nil => 0%nat
@@ -52,6 +59,16 @@ Fixpoint nb_occ (z:T) (l:list T) {struct l} : nat :=
 Definition equiv (l l':list T) := 
     forall z:T, nb_occ z l = nb_occ z l'.
 
+(*
+Definition equiv
+Lemma equiv_refl
+Lemma equiv_sym
+Lemma equiv_trans
+Lemma equiv_cons
+Lemma equiv_perm
+Hint Resolve equiv_cons equiv_refl equiv_perm : sort.
+...
+*)
 End poly.
 
 About insert.
@@ -62,20 +79,3 @@ Compute insert Z Z.leb 4 (2 :: 5 :: nil).
 Compute insertion_sort Z Z.leb (4::9::7::9::12::3::nil).
 Eval compute in (nb_occ Z Z.eqb 3 (3 :: 7 :: 3 :: nil)).
 End Tests.
-
-Section Proofs.
-Inductive sorted : list Z -> Prop :=
-  | sorted0 : sorted nil
-  | sorted1 : forall z:Z, sorted (z :: nil)
-  | sorted2 :
-      forall (z1 z2:Z) (l:list Z),
-        z1 <= z2 ->
-        sorted (z2 :: l) -> sorted (z1 :: z2 :: l).
-
-Hint Resolve sorted0 sorted1 sorted2 : sort.
-Lemma sort_2357 :
- sorted (2 :: 3 :: 5 :: 7 :: nil).
-Proof.
- auto with sort zarith.
-Qed.
-End Proofs.
