@@ -1,5 +1,5 @@
 (* A sorting example : 
-   (C) Yves Bertot, Pierre Castéran 
+   (C) Yves Bertot, Pierre CastÃ©ran 
 *)
 
 Require Import List.
@@ -199,7 +199,7 @@ Extraction "insert-sort" insert insertion_sort.
  realise la specification ci-dessus
 
  Afin d'illustrer la genericite de votre construction, montrer qu'elle
- permet de trier des listes de divers types de  données, et comment 
+ permet de trier des listes de divers types de  donnÃ©es, et comment 
  realiser les transformations suivantes :
   + tri par ordre decroissant 
   + tri sur un produit lexicographique
@@ -207,5 +207,4 @@ Extraction "insert-sort" insert insertion_sort.
 
 
 *)
-
 
