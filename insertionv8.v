@@ -129,7 +129,7 @@ Hint Resolve equiv_cons equiv_refl equiv_perm : sort.
 
 
 
- 
+
 
 (** Correlation between Z.leb and Z.le *)
 
@@ -207,4 +207,3 @@ Extraction "insert-sort" insert insertion_sort.
 
 
 *)
-
