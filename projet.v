@@ -129,4 +129,12 @@ Compute insertion_sort Z Z.geb (4::9::7::9::12::3::nil).
 
 Require Import Ascii.
 
+Variable (E: Type)
+(F:Type).
+Definition lexOrdered (E:Type) (F:Type) (cE : E -> E-> bool) (cF : F -> F -> bool)(x y : E*F) :=
+if cE (fst x) (fst y) then true else cF (snd x) (snd y).
+
+
+
+
 End Tests.
