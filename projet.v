@@ -129,12 +129,101 @@ Compute insertion_sort Z Z.geb (4::9::7::9::12::3::nil).
 
 Require Import Ascii.
 
-Variable (E: Type)
-(F:Type).
-Definition lexOrdered (E:Type) (F:Type) (cE : E -> E-> bool) (cF : F -> F -> bool)(x y : E*F) :=
-if cE (fst x) (fst y) then true else cF (snd x) (snd y).
+Variable (E:Type)
+         (F:Type)
+         (lebE:E->E->bool)
+         (lebF:F->F->bool)
+         (eqbE:E->E->bool)
+         (eqbF:F->F->bool).
+
+Definition lexCompare (x y : E*F) : bool :=
+   if eqbE (fst x) (fst y)
+      then lebF (snd x) (snd y)
+      else lebE (fst x) (fst y).
 
 
+Fixpoint lexInsert (z:E*F) (l:list (E*F)) {struct l} : list (E*F) :=
+  match l with
+  | nil => z :: nil
+  | cons a l' => if lexCompare z a
+      then z :: a :: l'
+      else a :: lexInsert z l'
+ end.
+
+Fixpoint lexInsertion_sort (l:list (E*F)) : list (E*F) :=
+match l with
+| nil => nil
+| z::l' => lexInsert z (lexInsertion_sort l')
+end.
+
+Inductive lexSorted : list (E*F) -> Prop :=
+  | lexSorted0 : lexSorted nil
+  | lexSorted1 : forall t:E*F, lexSorted (t :: nil)
+  | lexSorted2 :
+      forall (t1 t2:E*F) (l:list (E*F)),
+        (lexCompare t1 t2) = true ->
+        lexSorted (t2 :: l) -> lexSorted (t1 :: t2 :: l).
+
+Fixpoint lexNb_occ (z:E*F) (l:list (E*F)) {struct l} : nat :=
+  match l with
+  | nil => 0%nat
+  | (z' :: l') =>
+      if andb (eqbE (fst z) (fst z')) (eqbF (snd z) (snd z'))
+      then S (lexNb_occ z l')
+      else lexNb_occ z l'
+  end.
+
+Definition lexEquiv (l l':list (E*F)) := 
+    forall z:E*F, lexNb_occ z l = lexNb_occ z l'.
+
+Hint Resolve lexSorted0 lexSorted1 lexSorted2 : lexSort.
+Theorem lexSorted_inv :
+ forall (z:E*F) (l:list (E*F)), lexSorted (z :: l) -> lexSorted l.
+Proof.
+ intros z l H.
+ inversion H; auto with lexSort.
+Qed.
+
+Lemma lexEquiv_refl : forall l:list (E*F), lexEquiv l l.
+Proof.
+ unfold lexEquiv; trivial.
+Qed.
+
+Lemma lexEquiv_sym : forall l l':list (E*F), lexEquiv l l' -> lexEquiv l' l.
+Proof.
+  unfold lexEquiv; auto.
+Qed.
+
+Lemma lexEquiv_trans :
+ forall l l' l'':list (E*F), lexEquiv l l' -> 
+                         lexEquiv l' l'' -> 
+                         lexEquiv l l''.
+Proof.
+ intros l l' l'' H H0 z.
+ eapply trans_eq; eauto.
+Qed.
+(*
+Lemma lexEquiv_cons :
+ forall (t:E*F) (l l':list (E*F)), lexEquiv l l' -> 
+                             lexEquiv (t :: l) (t :: l').
+Proof.
+ intros t l l' H t'.
+ simpl; case_eq  (andb (eqbE (fst t) (fst t')) (eqbF (snd t) (snd t'))); auto.
+  -.
+Qed.
+
+Lemma lexEquiv_perm :
+ forall (a b:E*F) (l l':list (E*F)),
+   lexEquiv l l' -> 
+   lexEquiv (a :: b :: l) (b :: a :: l').
+Proof.
+ intros a b l l' H t; simpl.
+ case_eq (andb (eqbE (fst t) (fst a)) (eqbF (snd t) (snd a)));
+ case_eq (andb (eqbE (fsttz) (fst b)) (eqbF (snd t) (snd b))); 
+  simpl; case (H t); auto.
+Qed.
+*)
+Hint Resolve equiv_cons equiv_refl equiv_perm : sort.
 
 
 End Tests.

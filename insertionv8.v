@@ -205,5 +205,4 @@ Extraction "insert-sort" insert insertion_sort.
   + tri sur un produit lexicographique
   + tri selon les valeurs d'une fonction 
 
-
 *)
