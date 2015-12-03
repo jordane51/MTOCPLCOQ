@@ -105,9 +105,20 @@ Proof.
   simpl; case (H t); auto.
 Qed.
 
+(*
+Lemma insert_equiv : forall (l:list Z) (x:Z), 
+Lemma insert_sorted :
+Lemma sort_equiv : forall l, equiv l (insertion_sort l).
+Lemma sort_sorted : forall l, sorted (insertion_sort l).
+Lemma sort_sorted : forall l, sorted (insertion_sort l).
+*)
+
 Hint Resolve equiv_cons equiv_refl equiv_perm : sort.
 
 End poly.
+
+Check insertion_sort.
+Check 
 
 About insert.
 Open Scope Z_scope.
@@ -202,14 +213,29 @@ Proof.
  intros l l' l'' H H0 z.
  eapply trans_eq; eauto.
 Qed.
-(*
+
+Definition lexCompareEq (x y : E*F) : bool :=
+   if eqbE (fst x) (fst y)
+      then eqbF (snd x) (snd y)
+      else false.
+
+
+
+Inductive IlexEquiv : list (E*F) -> list (E*F) -> Prop :=
+  | IlexEquiv0 : IlexEquiv nil nil
+  | IlexEquiv1 : 
+    forall (l1 l2 : list (E*F)) (t1 t2: (E*F)),
+      (lexCompareEq t1 t2) = true ->
+      IlexEquiv (t1 :: l1)  (t2 :: l2) -> 
+      IlexEquiv l1 l2.
+
 Lemma lexEquiv_cons :
  forall (t:E*F) (l l':list (E*F)), lexEquiv l l' -> 
                              lexEquiv (t :: l) (t :: l').
 Proof.
  intros t l l' H t'.
- simpl; case_eq  (andb (eqbE (fst t) (fst t')) (eqbF (snd t) (snd t'))); auto.
-  -.
+ simpl.  case_eq (eqbE (fst t) (fst t')); auto.
+  -case_eq (eqbF (snd t) (snd t')); auto.
 Qed.
 
 Lemma lexEquiv_perm :
@@ -222,7 +248,7 @@ Proof.
  case_eq (andb (eqbE (fsttz) (fst b)) (eqbF (snd t) (snd b))); 
   simpl; case (H t); auto.
 Qed.
-*)
+
 Hint Resolve equiv_cons equiv_refl equiv_perm : sort.
 
 
