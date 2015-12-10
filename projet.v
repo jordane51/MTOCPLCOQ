@@ -105,19 +105,48 @@ Proof.
   simpl; case (H t); auto.
 Qed.
 
-End poly.
-
 About insertion_sort.
 
 (* manque les théormes qui disent que la liste sera triée et équivalente à l*)
 
-(*
-Lemma insert_equiv : forall (l:list Z) (x:Z), 
+
+Lemma insert_equiv : forall (l:list T) (x:T), 
+                  equiv (x :: l) (insert x l).
+Proof.
+ induction l as [|a l0 H]; simpl ; auto with sort.
+ intros x; apply equiv_refl; case_eq (leb x a);
+   simpl; auto with sort.
+  intro; apply equiv_trans with (a :: x :: l0); 
+   auto with sort.
+   - apply equiv_perm. apply equiv_refl.
+   - case (leb x a).
+     + apply equiv_perm. apply equiv_refl.
+     + .
+Qed.
+
 Lemma insert_sorted :
+ forall (l:list T) (x:T), sorted l -> sorted (insert x l).
+Proof.
+  intros l x H; elim H; simpl; auto with sort.
+  -  intro z; case_eq (leb x z); simpl; intros; 
+     le_from_bool;  auto with sort zarith.
+  -  intros z1 z2; case_eq (leb x z2); simpl; intros; 
+     case_eq (leb x z1);intros; le_from_bool;  auto with sort zarith.
+Qed.
+
 Lemma sort_equiv : forall l, equiv l (insertion_sort l).
+Proof.
+ induction l;simpl;auto with sort.
+ SearchAbout equiv.
+apply equiv_trans with (a:: insertion_sort l).
+ apply equiv_cons;auto.
+ apply insert_equiv.
+Qed.
+
 Lemma sort_sorted : forall l, sorted (insertion_sort l).
-Lemma sort_sorted : forall l, sorted (insertion_sort l).
-*)
+induction l;simpl;auto with sort.
+now apply insert_sorted.
+Qed.
 
 .Hint Resolve equiv_cons equiv_refl equiv_perm : sort.
 
