@@ -126,11 +126,6 @@ Hint Resolve equiv_cons equiv_refl equiv_perm : sort.
 *)
 
 
-
-
-
-
-
 (** Correlation between Z.leb and Z.le *)
 
 SearchAbout (Z.leb _ _ = true).
@@ -178,6 +173,11 @@ Proof.
 apply equiv_trans with (a:: insertion_sort l).
  apply equiv_cons;auto.
  apply insert_equiv.
+Qed.
+
+Lemma sort_sorted : forall l, sorted (insertion_sort l).
+induction l;simpl;auto with sort.
+now apply insert_sorted.
 Qed.
 
 Lemma sort_sorted : forall l, sorted (insertion_sort l).

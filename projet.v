@@ -105,6 +105,12 @@ Proof.
   simpl; case (H t); auto.
 Qed.
 
+End poly.
+
+About insertion_sort.
+
+(* manque les théormes qui disent que la liste sera triée et équivalente à l*)
+
 (*
 Lemma insert_equiv : forall (l:list Z) (x:Z), 
 Lemma insert_sorted :
@@ -113,7 +119,7 @@ Lemma sort_sorted : forall l, sorted (insertion_sort l).
 Lemma sort_sorted : forall l, sorted (insertion_sort l).
 *)
 
-Hint Resolve equiv_cons equiv_refl equiv_perm : sort.
+.Hint Resolve equiv_cons equiv_refl equiv_perm : sort.
 
 End poly.
 
@@ -152,7 +158,7 @@ Definition lexCompare (x y : E*F) : bool :=
       then lebF (snd x) (snd y)
       else lebE (fst x) (fst y).
 
-
+(*
 Fixpoint lexInsert (z:E*F) (l:list (E*F)) {struct l} : list (E*F) :=
   match l with
   | nil => z :: nil
@@ -250,6 +256,8 @@ Proof.
 Qed.
 
 Hint Resolve equiv_cons equiv_refl equiv_perm : sort.
+*)
+
 
 
 End Tests.
