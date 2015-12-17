@@ -26,7 +26,8 @@ Variables (T:Type)
           (leb:T->T->bool)
           (eqb:T->T->bool).
 
-Hypothesis lebTotal: forall x y , leb x y = true <-> leb y x = false.
+Hypothesis lebTotal: forall x y , leb x y = false -> leb y x = true.
+Hypothesis lebTrans: forall x y z, leb x y = true -> leb y z = true -> leb x z = true.
 
 Fixpoint insert (z:T) (l:list T) {struct l} : list T :=
   match l with
@@ -122,22 +123,29 @@ Proof.
    - apply equiv_perm. apply equiv_refl.
    - case (leb x a).
      + apply equiv_perm. apply equiv_refl.
-Admitted.
+     + apply equiv_cons. apply H.
+Qed.
 
 Lemma insert_sorted :
  forall (l:list T) (x:T), sorted l -> sorted (insert x l).
 Proof.
   intros l x H; elim H; simpl; auto with sort.
-  -  intro z; case_eq (leb x z); simpl; intros. constructor. auto. constructor. constructor. 
-  -  intros z1 z2; case_eq (leb x z2); simpl; intros; 
-     case_eq (leb x z1);intros; le_from_bool;  auto with sort zarith.
+  -  intro z; case_eq (leb x z); simpl; intros. constructor. auto. constructor. constructor.
+     + apply lebTotal. trivial.
+     + constructor.
+  -  intros. case_eq (leb x t1). intros; constructor. auto.
+     constructor; auto.
+     intros. case_eq (leb x t2). constructor; auto. constructor; auto.
+     constructor; auto. rewrite H4 in H2; auto.
 Qed.
+
+(* SearchAbout (equiv (?X :: _) (_ :: _)). *)
 
 Lemma sort_equiv : forall l, equiv l (insertion_sort l).
 Proof.
  induction l;simpl;auto with sort.
- SearchAbout equiv.
-apply equiv_trans with (a:: insertion_sort l).
+ constructor; auto.
+ apply equiv_trans with (a:: insertion_sort l).
  apply equiv_cons;auto.
  apply insert_equiv.
 Qed.
@@ -147,12 +155,11 @@ induction l;simpl;auto with sort.
 now apply insert_sorted.
 Qed.
 
-.Hint Resolve equiv_cons equiv_refl equiv_perm : sort.
+Hint Resolve equiv_cons equiv_refl equiv_perm : sort.
 
 End poly.
 
 Check insertion_sort.
-Check 
 
 About insert.
 Open Scope Z_scope.
