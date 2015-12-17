@@ -160,6 +160,13 @@ Hint Resolve equiv_cons equiv_refl equiv_perm : sort.
 End poly.
 
 Check insertion_sort.
+Check sort_sorted.
+
+Definition sort_correct (sort : forall T : Type, (T -> T -> bool) -> list T -> list T) :=
+  forall (T:Type) (leb : T -> T -> bool), (forall x y : T, leb x y = false -> leb y x = true) ->
+       forall l : list T, sorted T leb (insertion_sort T leb l).
+
+
 
 About insert.
 Open Scope Z_scope.
