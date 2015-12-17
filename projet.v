@@ -26,6 +26,8 @@ Variables (T:Type)
           (leb:T->T->bool)
           (eqb:T->T->bool).
 
+Hypothesis lebTotal: forall x y , leb x y = true <-> leb y x = false.
+
 Fixpoint insert (z:T) (l:list T) {struct l} : list T :=
   match l with
   | nil => z :: nil
@@ -109,7 +111,6 @@ About insertion_sort.
 
 (* manque les théormes qui disent que la liste sera triée et équivalente à l*)
 
-
 Lemma insert_equiv : forall (l:list T) (x:T), 
                   equiv (x :: l) (insert x l).
 Proof.
@@ -121,15 +122,13 @@ Proof.
    - apply equiv_perm. apply equiv_refl.
    - case (leb x a).
      + apply equiv_perm. apply equiv_refl.
-     + .
-Qed.
+Admitted.
 
 Lemma insert_sorted :
  forall (l:list T) (x:T), sorted l -> sorted (insert x l).
 Proof.
   intros l x H; elim H; simpl; auto with sort.
-  -  intro z; case_eq (leb x z); simpl; intros; 
-     le_from_bool;  auto with sort zarith.
+  -  intro z; case_eq (leb x z); simpl; intros. constructor. auto. constructor. constructor. 
   -  intros z1 z2; case_eq (leb x z2); simpl; intros; 
      case_eq (leb x z1);intros; le_from_bool;  auto with sort zarith.
 Qed.
